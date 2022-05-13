@@ -1,0 +1,4 @@
+lala 10
+farid 10
+kk 20
+uuu 10
