@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Шаблон для вывода списка кандидатов и отдельных страниц кандидатов</title>
+</head>
+<body>
+<h1>Все кандидаты</h1>
+{% for candidate in all_candidates %}
+<p><a href="/candidates/{{ candidate.id }}">{{ candidate.name }}</a></p>
+{% endfor %}
+</body>
+</html>
