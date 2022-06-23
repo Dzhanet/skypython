@@ -1,5 +1,8 @@
 import json
-from pprint import pp
+
+#объявим константы
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 
 def load_json():
     """загружает данные из posts.json в список"""
@@ -21,8 +24,6 @@ def search_posts(tag):
     return posts_with_tag
 
 
-# pp(search_posts('с'))
-
 def load_post(post):
     """Добавит список постов в posts.json"""
 
@@ -34,8 +35,6 @@ def load_post(post):
         json.dump(dictionary, f, ensure_ascii=False)
 
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
 def is_filename_allowed(filename):
     """Проверяем файл на расширения"""
 
@@ -43,3 +42,15 @@ def is_filename_allowed(filename):
     if extension in ALLOWED_EXTENSIONS:
         return True
     return False
+
+def save_uploaded_picture(picture):
+    """сохраняет картинку от юзера в uploads/images"""
+
+    # Получаем имя файла у загруженного файла
+    filename = picture.filename
+    if is_filename_allowed(filename):
+        # Сохраняем картинку под родным именем в папку uploads
+        picture.save(f"./uploads/images/{filename}")
+        return f"./uploads/images/{filename}"
+    else:
+        return "Загруженный файл не в формате jpeg или png, мы вредные, принимаем только их"

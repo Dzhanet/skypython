@@ -1,7 +1,7 @@
 # Сперва импорттируем класс блюпринта
 from flask import Blueprint, render_template, request
-from ..functions import search_posts
-from ..logger import file_handler
+from functions import search_posts
+from logger import file_handler
 # Затем создаем новый блюпринт, выбираем для него имя
 main_blueprint = Blueprint('main_blueprint', __name__, template_folder='templates') #добавим настройку папки с шаблонами
 

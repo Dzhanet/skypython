@@ -1,7 +1,7 @@
-# Сперва импорттируем класс блюпринта
+import logging
 from flask import Blueprint, render_template, request, send_from_directory
-from ..functions import is_filename_allowed, load_post
-from ..logger import file_handler
+from functions import load_post, save_uploaded_picture
+from logger import file_handler
 import os
 # Затем создаем новый блюпринт, выбираем для него имя
 
@@ -18,28 +18,23 @@ def page_post_form():
 def page_post_upload():
     # Получаем объект картинки и текст из форм
     picture = request.files.get("picture")
-    content = request.values.get("content")
+    content = request.form.get("content")
     # проверка на существование картинки
-    if picture:
-        # Получаем имя файла у загруженного файла
-        filename = picture.filename
-        if is_filename_allowed(filename):
-            # Сохраняем картинку под родным именем в папку uploads
-            path_to_save = f"./uploads/images/{filename}"
-            picture.save(path_to_save)
-            #начинаем работу с текстом от юзера
-            #создаем словарь с постом и добавим его в posts.json
-            post = {'pic': path_to_save, 'content': content}
-            load_post(post)
-            return render_template('post_uploaded.html', filename=filename, content=content)
-        else:
-            file_handler.info('Загружен файл в другом формате')
-            return "Загруженный файл не в формате jpeg или png, мы вредные, принимаем только их"
-    else:
-        file_handler.error('файл не был загружен')
+    if not picture or content:
         return "Ошибка загрузки"
 
+    try:
+        picture_path = save_uploaded_picture(picture)
 
+    except FileNotFoundError:
+        return "Не удалось сохранить файл, путь не найден"
+
+    picture_url = "/"+picture_path
+    #начинаем работу с текстом от юзера
+    #создаем словарь с постом и добавим его в posts.json
+    post = {'pic': picture_url, 'content': content}
+    load_post(post)
+    return render_template('post_uploaded.html', filename=picture_url, content=content)
 
 
 @loader_blueprint.route("/uploads/<path:path>")
