@@ -1,10 +1,11 @@
 # Сперва импорттируем класс блюпринта
 from flask import Blueprint, render_template, request
 from functions import search_posts
-from logger import file_handler
+import logging
+from werkzeug.exceptions import NotFound
 # Затем создаем новый блюпринт, выбираем для него имя
 main_blueprint = Blueprint('main_blueprint', __name__, template_folder='templates') #добавим настройку папки с шаблонами
-
+logger = logging.getLogger('basiq')
 # Создаем вьюшку, используя в декораторе блюпринт вместо app
 @main_blueprint.route('/')
 def page_index():
@@ -18,4 +19,6 @@ def page_tag():
         posts_with_tag = search_posts(s) #получаем список словарей с постами по тегу от юзера
         return render_template("post_list.html", s=s, items=posts_with_tag) #items-словарь, к-й пребирает в шаблоне
     else:
-        file_handler.info('Пользователь ничего не ввел')
+        logger.info('Пользователь ничего не ввел')
+        raise NotFound
+

@@ -1,12 +1,11 @@
 import logging
 from flask import Blueprint, render_template, request, send_from_directory
 from functions import load_post, save_uploaded_picture
-from logger import file_handler
-import os
+import logging
 # Затем создаем новый блюпринт, выбираем для него имя
 
 loader_blueprint = Blueprint('loader_blueprint', __name__, template_folder='templates') #добавим настройку папки с шаблонами
-
+logger = logging.getLogger('basiq')
 # Создаем вьюшку, используя в декораторе блюпринт вместо app
 
 @loader_blueprint.route("/post/", methods=["GET"])
@@ -20,16 +19,17 @@ def page_post_upload():
     picture = request.files.get("picture")
     content = request.form.get("content")
     # проверка на существование картинки
-    if not picture or content:
+    if not picture or not content:
         return "Ошибка загрузки"
 
     try:
         picture_path = save_uploaded_picture(picture)
 
     except FileNotFoundError:
+        logger.error('Файл не удалось загрузить')
         return "Не удалось сохранить файл, путь не найден"
 
-    picture_url = "/"+picture_path
+    picture_url = picture_path
     #начинаем работу с текстом от юзера
     #создаем словарь с постом и добавим его в posts.json
     post = {'pic': picture_url, 'content': content}

@@ -1,8 +1,9 @@
 import json
+import logging
 
 #объявим константы
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
+logger = logging.getLogger('basiq')
 
 def load_json():
     """загружает данные из posts.json в список"""
@@ -50,7 +51,8 @@ def save_uploaded_picture(picture):
     filename = picture.filename
     if is_filename_allowed(filename):
         # Сохраняем картинку под родным именем в папку uploads
-        picture.save(f"./uploads/images/{filename}")
-        return f"./uploads/images/{filename}"
+        picture.save(f"uploads/images/{filename}")
+        return f"/uploads/images/{filename}"
     else:
+        logger.info('Фвйл вне допустимых расширений')
         return "Загруженный файл не в формате jpeg или png, мы вредные, принимаем только их"
